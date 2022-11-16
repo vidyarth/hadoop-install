@@ -1,0 +1,776 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Hadoop process</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-opaquegray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="cf71afe6-3740-4fdc-aee4-db93021b5cff" class="page sans"><header><h1 class="page-title">Hadoop process</h1></header><div class="page-body"><p id="e49811cc-9190-4055-a221-ecf509c67f9c" class="">
+</p><h3 id="5d6c9b6f-a3ed-440e-a596-57d6f58c8bd9" class="">Update the packages</h3><pre id="e3339dfc-e288-463c-9a61-3e4847e276c6" class="code code-wrap"><code>sudo apt-get update</code></pre><p id="70865505-974c-41f2-9e3f-10916e16d521" class="">
+</p><h3 id="03aba1b5-f0bd-43d7-8ba1-9d23dc0d0527" class="">Install JAVA</h3><pre id="1c083bf9-f7ab-41c2-be52-f3d90da9c3e1" class="code code-wrap"><code>sudo apt-get install openjdk-8-jdk</code></pre><p id="4d966ce2-684d-4d2b-996b-dc3adc521747" class="">
+</p><pre id="0cc7be8d-a21d-4059-a520-dcd13a06e92b" class="code code-wrap"><code>java -version
+
+sudo update-alternatives --config java</code></pre><p id="53631456-9a77-4331-8fe7-52d3cd403e9e" class="">
+</p><pre id="f62ed567-d0cf-4261-a5ea-656b56dcd2e5" class="code code-wrap"><code>sudo addgroup hadoop
+sudo adduser --ingroup hadoop hduser</code></pre><p id="fc072dbc-f304-4cbf-8b38-ec8d862baa79" class="">
+</p><pre id="54a6bbd1-cbab-4935-88ea-f13438971b8f" class="code code-wrap"><code>sudo adduser hduser sudo</code></pre><p id="b3ad2653-4301-47c1-a904-02a48d1593c5" class="">
+</p><pre id="f32e952d-9e7e-4bfa-a9c9-a875e1196f96" class="code code-wrap"><code>sudo apt-get install ssh
+which ssh
+which sshd</code></pre><p id="2fb40d90-feef-4de4-a732-b354d93b08da" class="">
+</p><pre id="275871e4-e922-4d9e-bce5-4cefbae82e4b" class="code code-wrap"><code>ssh-keygen -t rsa -P &quot;&quot;</code></pre><p id="d3a13e17-69c9-4980-937e-5ad2b5d9fd2e" class="">
+</p><pre id="50766735-4dfc-48aa-9772-198f03ae9749" class="code code-wrap"><code>cat $HOME/.ssh/id_rsa.pub &gt;&gt; $HOME/.ssh/authorized_keys</code></pre><p id="95bfee55-e768-40c0-8a6b-de24dec1f1d0" class="">
+</p><pre id="34f65eab-c668-4ca7-aeab-dbc561bd4779" class="code code-wrap"><code>ssh localhost</code></pre><p id="3b5b6ca3-f931-4ec3-9a11-e6433d76073b" class="">
+</p><pre id="cc5e2b11-66b1-42c8-a0b2-61ad9e71e0a1" class="code code-wrap"><code>sudo mkdir -p /usr/local/hadoop</code></pre><p id="75768909-7c98-4978-b476-ef809601678c" class="">
+</p><pre id="ad3e114f-3c5b-4a0e-8d6b-ba962101fa35" class="code code-wrap"><code>wget https://archive.apache.org/dist/hadoop/common/hadoop-2.6.5/hadoop-2.6.5.tar.gz</code></pre><p id="2cea58c2-fe43-4d74-b553-5e2939a95c95" class="">
+</p><pre id="70509173-537b-42ee-9d0d-90268ffdb209" class="code code-wrap"><code>tar xvzf hadoop-2.6.5.tar.gz</code></pre><p id="fcca2b58-1d7f-4463-85db-e45e21662e9b" class="">
+</p><pre id="e7259e68-6eff-4220-9853-5153e8268b6a" class="code code-wrap"><code>cd
+cd hadoop-2.6.5
+sudo mv * /usr/local/hadoop/</code></pre><p id="e1d63061-1adc-4c30-ab3c-e467f8cb2b8a" class="">
+</p><pre id="b5dd0a79-9a67-4f2f-90c5-a33859c21427" class="code code-wrap"><code>sudo chown -R hduser:hadoop /usr/local/hadoop</code></pre><p id="c575d934-4746-4e91-aa15-405b7a3124f7" class="">
+</p><pre id="01230315-9764-43d7-8850-5583640f4b1e" class="code code-wrap"><code>vim ~/.bashrc</code></pre><p id="63a3fa5e-fabb-4c22-8756-7fab9aaadd13" class="">
+</p><pre id="f68b4ca3-1af7-4130-886f-539ea0112c02" class="code code-wrap"><code>#HADOOP VARIABLES START
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export HADOOP_INSTALL=/usr/local/hadoop
+export PATH=$PATH:$HADOOP_INSTALL/bin
+export PATH=$PATH:$HADOOP_INSTALL/sbin
+export HADOOP_MAPRED_HOME=$HADOOP_INSTALL
+export HADOOP_COMMON_HOME=$HADOOP_INSTALL
+export HADOOP_HDFS_HOME=$HADOOP_INSTALL
+export YARN_HOME=$HADOOP_INSTALL
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_INSTALL/lib/native 
+export HADOOP_OPTS=&quot;-Djava.library.path=$HADOOP_INSTALL/lib&quot; export HADOOP_HOME_WARN_SUPPRESS=1
+export HADOOP_ROOT_LOGGER=&quot;WARN,DRFA&quot;
+#HADOOP VARIABLES END</code></pre><p id="a2dca7be-896c-4549-9dc9-35ebb1914561" class="">
+</p><pre id="4a728d12-20b1-4d27-89ef-c024778bb98d" class="code code-wrap"><code>source ~/.bashrc</code></pre><p id="6206c119-0f9a-4fdc-9c1c-8a7176682c6d" class="">
+</p><pre id="58f14d86-a7f2-403a-b395-3c4cd3bae20e" class="code code-wrap"><code>vim /usr/local/hadoop/etc/hadoop/hadoop-env.sh
+export JAVA_HOME==/usr/lib/jvm/java-8-openjdk-amd64</code></pre><p id="81ec824c-8916-4d25-8f58-f1b717164473" class="">
+</p><pre id="c4060904-d8fa-4408-abd9-c118ac9cd39a" class="code code-wrap"><code>sudo mkdir -p /app/hadoop/tmp
+sudo chown hduser:hadoop /app/hadoop/tmp
+</code></pre><p id="08713edb-9682-40ec-990a-be2292dda08f" class="">
+</p><pre id="e1c14119-b6bb-4093-92a8-cee4bc07eb13" class="code code-wrap"><code>vim /usr/local/hadoop/etc/hadoop/core-site.xml
+
+&lt;property&gt;
+	&lt;name&gt;hadoop.tmp.dir&lt;/name&gt;
+	&lt;value&gt;/app/hadoop/tmp&lt;/value&gt;
+	&lt;description&gt;A base for other temporary directories.&lt;/description&gt;
+&lt;/property&gt;
+
+&lt;property&gt;
+&lt;name&gt;fs.default.name&lt;/name&gt;
+&lt;value&gt;hdfs://localhost:54310&lt;/value&gt;
+&lt;description&gt;The name of the default file system. A URI whose scheme and authority determine the FileSystem implementation. The uri&#x27;s scheme determines the config property (fs.SCHEME.impl) naming the FileSystem implementation class. The uri&#x27;s authority is used to determine the host, port, etc. for a filesystem.&lt;/description&gt;
+&lt;/property&gt;</code></pre><p id="20b04169-545e-4fcb-90b4-9015c8472743" class="">
+</p><pre id="ac388320-2318-4faf-98be-92b9e461dcaa" class="code code-wrap"><code>cp /usr/local/hadoop/etc/hadoop/mapred-site.xml.template /usr/local/hadoop/etc/hadoop/mapred-site.xml</code></pre><p id="d30be74a-97df-463f-b81d-ec2079c211c9" class="">
+</p><pre id="0d8403a4-86ad-4814-9b60-f2cb0c993722" class="code code-wrap"><code>vim /usr/local/hadoop/etc/hadoop/mapred-site.xml
+
+
+&lt;property&gt;
+&lt;name&gt;mapred.job.tracker&lt;/name&gt;
+&lt;value&gt;localhost:54311&lt;/value&gt;
+&lt;description&gt;The host and port that the MapReduce job tracker runs at. If &quot;local&quot;, then jobs are run in-process as a single map
+and reduce task.
+&lt;/description&gt;
+&lt;/property&gt;</code></pre><p id="2343439d-11d0-45ef-bad1-04b492a3f1f7" class="">
+</p><pre id="5bc967e8-c3ae-49c2-876e-4597ff264521" class="code code-wrap"><code>sudo mkdir -p /usr/local/hadoop_store/hdfs/namenode
+sudo mkdir -p /usr/local/hadoop_store/hdfs/datanode
+sudo chown -R hduser:hadoop /usr/local/hadoop_store</code></pre><p id="dfc66880-40e5-4f8b-8015-5eb4a981369c" class="">
+</p><pre id="fa37ff15-7149-4f52-b445-99353015352b" class="code code-wrap"><code>vim /usr/local/hadoop/etc/hadoop/hdfs-site.xml
+
+
+&lt;property&gt;
+&lt;name&gt;dfs.replication&lt;/name&gt;
+&lt;value&gt;1&lt;/value&gt;
+&lt;description&gt;Default block replication.
+The actual number of replications can be specified when the file is created. The default is used if replication is not specified in create time. &lt;/description&gt;
+ &lt;/property&gt;
+ &lt;property&gt;
+&lt;name&gt;dfs.namenode.name.dir&lt;/name&gt;
+&lt;value&gt;file:/usr/local/hadoop_store/hdfs/namenode&lt;/value&gt; &lt;/property&gt;
+&lt;property&gt;
+&lt;name&gt;dfs.datanode.data.dir&lt;/name&gt; &lt;value&gt;file:/usr/local/hadoop_store/hdfs/datanode&lt;/value&gt;
+&lt;/property&gt;</code></pre><p id="426bfc4e-cea0-4c2b-b826-050d06e11983" class="">
+</p><pre id="d9b8414b-8012-4456-b27d-68fa3292d26e" class="code code-wrap"><code>hadoop namenode –format
+
+hdfs namenode -format</code></pre><p id="f8ccc880-6af3-46fa-8222-085bc501174f" class="">
+</p><pre id="2ae256a3-13ca-4d45-bb9f-31d0c1e2ec07" class="code code-wrap"><code>start-all.sh
+
+jps</code></pre><p id="b3b3a630-0cf6-4627-84ba-01d124205179" class="">
+</p><blockquote id="794e6263-42eb-47cc-b8f6-3cfdb3811b59" class="">If  there are not 6 daemons running ! then do the following</blockquote><p id="f6e9097a-04e3-46cb-8fd3-e5bc585cb660" class="">
+</p><pre id="2dc8c9a5-331b-415a-8cab-241fb2c5895c" class="code code-wrap"><code>stop-all.sh
+
+sudo rm -rf /app/hadoop/tmp
+sudo mkdir -p /app/hadoop/tmp
+sudo chown hduser:hadoop /app/hadoop/tmp
+sudo chown 750 /app/hadoop/tmp
+</code></pre><p id="2d263c0f-783d-4b5a-bf23-91d2ea4cc23a" class="">
+</p><pre id="8e23a7b2-edc7-410e-93c1-2b19e519a7a8" class="code code-wrap"><code>start-all.sh</code></pre><p id="6fb3bd8e-127c-4449-80b6-c253960c736b" class="">
+</p><p id="bbabc3a5-b24c-4219-b369-57925f744711" class="">
+</p><h1 id="fb6b8c6a-0b25-4258-8cad-ddea1cba8471" class="">Map reduce</h1><p id="1dec4943-87df-49e5-9311-c5234abe590a" class="">
+</p><pre id="50a43a09-76d6-4d11-a909-0a772067d447" class="code code-wrap"><code>hdfs dfs -mkdir -p input_dir</code></pre><p id="d3c5bfb1-f44f-4b8a-a9df-a96a75991ca5" class="">
+</p><pre id="a2186d48-984f-4c34-b433-5497d7100c7a" class="code code-wrap"><code>cd
+vim test.txt</code></pre><p id="9610ffcb-7168-441b-8816-947ba283d183" class="">
+</p><pre id="efb74178-cecc-472f-a2e3-a40680dc3256" class="code code-wrap"><code>hdfs dfs -put /home/hduser/test.txt input_dir</code></pre><pre id="c7ffb64d-c23e-4949-8873-8fb6c9abc891" class="code code-wrap"><code>hdfs dfs -ls input_dir</code></pre><pre id="30470bc0-21e1-4685-9f7a-802eb82fe660" class="code code-wrap"><code>hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.5.jar wordcount input_dir output</code></pre><p id="fa408b62-6ada-4bd7-830f-c3ea028e4c7f" class="">
+</p><pre id="5cf91f48-a27b-421b-8d80-33700222593b" class="code code-wrap"><code>hdfs dfs -ls output</code></pre><pre id="466abec1-f6da-41b9-b2aa-3189a8c4de98" class="code code-wrap"><code>hdfs dfs cat output/part-r-00000</code></pre><p id="80d0c5a6-3329-46d9-abb3-f7333ae43a98" class="">
+</p><p id="40a16af6-523d-4f82-ae9a-cfae86cd0a49" class="">
+</p></div></article></body></html>
